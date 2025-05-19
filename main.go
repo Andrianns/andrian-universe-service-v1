@@ -13,11 +13,12 @@ func main() {
 	config.LoadEnv()
 	appCfg := config.LoadConfig()
 	config.InitDB(appCfg)
+	config.InitClients(appCfg)
 
 	config.DB.AutoMigrate(&models.User{})
 
 	app := fiber.New()
-	router.SetupRoutes(app)
+	router.SetupRoutes(app, appCfg)
 
 	port := appCfg.Port
 	if port == "" {

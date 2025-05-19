@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/Andrianns/andrian-universe-service-v1/app/clients"
 	"github.com/joho/godotenv"
 )
 
@@ -34,6 +35,10 @@ type AppConfig struct {
 
 	Services struct {
 		Inquiry ServiceConfig
+	}
+
+	Clients struct {
+		GoogleDrive clients.GoogleDrive
 	}
 }
 
@@ -92,4 +97,13 @@ func LoadEnv() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
+}
+
+func InitClients(cfg *AppConfig) {
+	driveClient, err := clients.NewGoogleDriveClient()
+	if err != nil {
+		log.Fatalf("Failed to init Google Drive client: %v", err)
+	}
+
+	cfg.Clients.GoogleDrive = driveClient
 }
