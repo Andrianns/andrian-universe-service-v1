@@ -5,7 +5,7 @@ class UserRepository {
 
   async findAll() {
     try {
-      const users = await this.User.findOne();
+      const users = await this.User.findOne().Where();
       if (!users) {
         throw new Error('No users found');
       }
