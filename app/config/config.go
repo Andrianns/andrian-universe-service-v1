@@ -45,18 +45,18 @@ func LoadConfig() *AppConfig {
 	}
 
 	cfg.DB.Development = DatabaseConfig{
-		Username: os.Getenv("DB_USERNAME"),
-		Password: os.Getenv("DB_PASSWORD"),
-		Database: os.Getenv("DB_NAME"),
-		Host:     os.Getenv("DB_HOST"),
+		Username: os.Getenv("PGUSER"),
+		Password: os.Getenv("PGPASSWORD"),
+		Database: os.Getenv("PGDATABASE"),
+		Host:     os.Getenv("PGHOST"),
 		Dialect:  "postgres",
 	}
 
 	cfg.DB.Test = DatabaseConfig{
-		Username:    os.Getenv("DB_USERNAME"),
-		Password:    os.Getenv("DB_PASSWORD"),
-		Database:    os.Getenv("DB_NAME"),
-		Host:        os.Getenv("DB_HOST"),
+		Username:    os.Getenv("PGUSER"),
+		Password:    os.Getenv("PGPASSWORD"),
+		Database:    os.Getenv("PGDATABASE"),
+		Host:        os.Getenv("PGHOST"),
 		Dialect:     getOrDefault("DB_DIALECT", "postgres"),
 		SSLRequired: true,
 		SSLVerify:   false,
