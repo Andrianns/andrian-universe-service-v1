@@ -21,7 +21,6 @@ func (ctrl *DocumentController) UploadCV(c *fiber.Ctx) error {
 			"error": "file is required",
 		})
 	}
-
 	folderID, err := ctrl.drive.EnsureFolder("CV")
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -51,7 +50,16 @@ func (ctrl *DocumentController) UploadCV(c *fiber.Ctx) error {
 
 // GetCV handles GET /cv
 func (ctrl *DocumentController) GetCV(c *fiber.Ctx) error {
-	url, err := ctrl.drive.GetFileURLByName("andrian-cv.pdf", "CV") // ganti nama file jika perlu
+	var req struct {
+		FileName string `json:"fileName"`
+	}
+
+	if err := c.BodyParser(&req); err != nil || req.FileName == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid or missing fileName in request body",
+		})
+	}
+	url, err := ctrl.drive.GetFileURLByName(req.FileName, "CV")
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "CV file not found",

@@ -18,8 +18,8 @@ func SetupRoutes(app *fiber.App, cfg *config.AppConfig) {
 	userGroup.Put("/:id", userController.UpdateUser)
 	userGroup.Delete("/:id", userController.DeleteUser)
 
-	// documentController :=
+	documentController := controllers.NewDocumentController(cfg.Clients.GoogleDrive)
 
-	// app.Post("/cv", documentController.UploadCV)
-	// app.Get("/cv", documentController.GetCV)
+	app.Post("/cv", documentController.UploadCV)
+	app.Post("/get-cv", documentController.GetCV)
 }

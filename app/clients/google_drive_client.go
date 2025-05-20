@@ -34,6 +34,7 @@ func NewGoogleDriveClient() (GoogleDrive, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("✅ Connected to Google Drive as:", creds.ProjectID)
 
 	return &googleDriveClient{srv: srv}, nil
 }
@@ -50,7 +51,7 @@ func (g *googleDriveClient) EnsureFolder(name string) (string, error) {
 		return files.Files[0].Id, nil
 	}
 
-	folder := &drive.File{Name: name, MimeType: "application/vnd.google-apps.folder"}
+	folder := &drive.File{Name: name, MimeType: "application/vnd.google-apps.folder", Parents: []string{"root"}}
 	created, err := g.srv.Files.Create(folder).Fields("id").Do()
 	if err != nil {
 		return "", err
@@ -68,7 +69,7 @@ func (g *googleDriveClient) UploadFile(file *multipart.FileHeader, folderID stri
 	pr, pw := io.Pipe()
 	go func() {
 		defer pw.Close()
-		io.Copy(pw, src) // ✅ now using correct writer
+		io.Copy(pw, src)
 	}()
 
 	fileMeta := &drive.File{
