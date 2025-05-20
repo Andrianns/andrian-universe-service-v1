@@ -15,13 +15,23 @@ func NewDocumentController(d clients.GoogleDrive) *DocumentController {
 
 // UploadCV handles POST /cv
 func (ctrl *DocumentController) UploadCV(c *fiber.Ctx) error {
+	var req struct {
+		Folder string `json:"folder"`
+	}
+	if err := c.BodyParser(&req); err != nil || req.Folder == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Missing folder in request body",
+		})
+	}
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "file is required",
 		})
 	}
-	folderID, err := ctrl.drive.EnsureFolder("CV")
+
+	folderID, err := ctrl.drive.EnsureFolder(req.Folder)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "failed to access or create CV folder",
